@@ -100,7 +100,7 @@ const HomePage = () => {
         {/* Service */}
         <div className="row mb-4 ">
           {service.map((item) => (
-            <div className="col-6 col-sm-4 col-md-3 text-center m-2" key={item.id} onClick={() => handleServiceClick(item)} style={{ cursor: "pointer", width: "80px" }}>
+            <div className="col-12 col-sm-6 col-md-4 col-lg-3 text-center m-2" key={item.id} onClick={() => handleServiceClick(item)} style={{ cursor: "pointer", width: "100px" }}>
               <img src={item.service_icon} alt={item.service_name} className="img-thumbnail" style={{ width: "50px", height: "50px" }} />
               <p style={{ fontSize: "13px", marginTop: "5px" }}>{item.service_name}</p>
             </div>
