@@ -92,6 +92,10 @@ const EditPage = () => {
     }
   };
 
+  const handleCancel = () => {
+    navigate("/profile");
+  };
+
   return (
     <div className="container">
       {/* Navbar */}
@@ -148,6 +152,9 @@ const EditPage = () => {
           </div>
           <button type="submit" className="btn btn-danger w-100">
             Simpan
+          </button>
+          <button type="button" className="btn btn-secondary w-100 mt-2" onClick={handleCancel}>
+            Batal
           </button>
         </form>
       </div>
