@@ -39,7 +39,7 @@ const LoginForm = () => {
     <div className="container vh-100 d-flex align-items-center justify-content-center">
       <div className="row w-100 h-100 m-0 rounded overflow-hidden">
         {/* Form */}
-        <div className="col-md-5 col-lg-5 p-5 mt-5 align-self-center">
+        <div className="col-md-12 col-lg-6 col-xl-5 p-5 mt-5 align-self-center">
           <div className="d-flex align-items-center justify-content-center mb-5">
             <img src={logo} alt="Logo" className="img-fluid me-2" style={{ width: "25px", height: "25px" }} />
             <h4 className="text-center m-0">SIMS PPOB</h4>
@@ -75,7 +75,7 @@ const LoginForm = () => {
           </form>
         </div>
         {/* Image */}
-        <div className="d-none d-md-block col-md-7 col-lg-7 p-0 right-side">
+        <div className="d-none d-lg-block col-lg-6 col-xl-7 p-0 right-side">
           <img src={login} alt="Login" className="img-fluid w-100 h-100" style={{ objectFit: "cover" }} />
         </div>
       </div>
