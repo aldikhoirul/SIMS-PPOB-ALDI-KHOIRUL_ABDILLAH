@@ -74,7 +74,7 @@ const TopupPage = () => {
           <div>
             <div className="d-flex flex-wrap">
               {[10000, 20000, 50000, 100000, 250000, 500000, 1000000].map((value) => (
-                <button key={value} className="btn btn-outline-secondary m-1" onClick={() => handleNominalChange(value)}>
+                <button key={value} className={`btn btn-outline-secondary m-1 ${window.innerWidth < 576 || window.innerWidth < 768 ? "btn-sm" : "btn-lg"}`} onClick={() => handleNominalChange(value)}>
                   Rp{value.toLocaleString()}
                 </button>
               ))}

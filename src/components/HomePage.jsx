@@ -43,6 +43,22 @@ const HomePage = () => {
     autoplay: true, // fitur autoplay
     autoplaySpeed: 3000, // atur waktu transisi antar gambar
     // arrows: true, // menampilkan tombol panah kiri dan kanan
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+        },
+      },
+      {
+        breakpoint: 576,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   if (loading) {
@@ -82,9 +98,9 @@ const HomePage = () => {
         <Saldo />
 
         {/* Service */}
-        <div className="d-flex flex-wrap mb-4 ">
+        <div className="row mb-4 ">
           {service.map((item) => (
-            <div className="text-center m-2" key={item.id} onClick={() => handleServiceClick(item)} style={{ cursor: "pointer", width: "80px" }}>
+            <div className="col-6 col-sm-4 col-md-3 text-center m-2" key={item.id} onClick={() => handleServiceClick(item)} style={{ cursor: "pointer", width: "80px" }}>
               <img src={item.service_icon} alt={item.service_name} className="img-thumbnail" style={{ width: "50px", height: "50px" }} />
               <p style={{ fontSize: "13px", marginTop: "5px" }}>{item.service_name}</p>
             </div>
@@ -96,7 +112,7 @@ const HomePage = () => {
           <Slider {...sliderSettings}>
             {banner.map((item) => (
               <div className="text-center m-2" key={item.id}>
-                <img src={item.banner_image} alt={item.banner_name} className="img-fluid" />
+                <img src={item.banner_image} alt={item.banner_name} className="img-fluid" style={{ maxHeight: "300px", objectFit: "cover", margin: "0 auto" }} />
               </div>
             ))}
           </Slider>
