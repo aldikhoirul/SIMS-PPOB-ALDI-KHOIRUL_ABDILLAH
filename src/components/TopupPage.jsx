@@ -14,13 +14,30 @@ const TopupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (nominal <= 0) {
+      Swal.fire("Error", "Nominal harus lebih besar dari Rp 0", "error");
+      return;
+    }
+
+    if (nominal > 1000000) {
+      Swal.fire("Error", "Nominal top up tidak boleh lebih dari Rp 1.000.000", "error");
+      return;
+    }
+
     try {
-      await topUp(nominal);
-      Swal.fire("Berhasil", "Top up sebesar Rp " + nominal + " berhasil!", "success");
+      const response = await topUp(nominal);
+      Swal.fire("Berhasil", "Top up sebesar Rp " + nominal.toLocaleString() + " berhasil!", "success");
       setNominal("");
     } catch (error) {
-      console.error(error.response.data.message);
-      setMessage(error.response.data.message);
+      console.error(error.response?.data?.message || error.message);
+
+      if (error.response?.data?.message === "Saldo tidak mencukupi") {
+        Swal.fire("Gagal", "Saldo Anda tidak mencukupi untuk melakukan top up.", "error");
+      } else {
+        Swal.fire("Error", error.response?.data?.message || "Terjadi kesalahan, coba lagi.", "error");
+      }
+      setMessage(error.response?.data?.message || "Terjadi kesalahan, coba lagi.");
     }
   };
 
@@ -34,6 +51,7 @@ const TopupPage = () => {
         <Saldo />
         <h2 className="fw-normal fs-5">Silahkan Masukan,</h2>
         <h2 className="fw-bold mb-5">Nominal Top Up</h2>
+
         {/* Form Top Up */}
         <div className="col-md-8 col-lg-8">
           <form onSubmit={handleSubmit}>
@@ -45,7 +63,7 @@ const TopupPage = () => {
                 <input type="number" className="form-control" id="nominal" value={nominal} onChange={(e) => setNominal(e.target.value)} placeholder="Masukkan nominal" required />
               </div>
             </div>
-            <button type="submit" className="btn btn-danger w-100">
+            <button type="submit" className="btn btn-danger w-100" disabled={nominal === ""}>
               Top Up
             </button>
           </form>
@@ -55,7 +73,7 @@ const TopupPage = () => {
         <div className="col-md-4 col-lg-4">
           <div>
             <div className="d-flex flex-wrap">
-              {[10000, 20000, 50000, 100000, 250000, 500000].map((value) => (
+              {[10000, 20000, 50000, 100000, 250000, 500000, 1000000].map((value) => (
                 <button key={value} className="btn btn-outline-secondary m-1" onClick={() => handleNominalChange(value)}>
                   Rp{value.toLocaleString()}
                 </button>

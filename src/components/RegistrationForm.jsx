@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import logo from "../assets/images/logo.png";
-import login from "../assets/images/illustrasi Login.png";
+import logo from "../assets/images/Logo.png";
+import login from "../assets/images/Illustrasi Login.png";
 import "../styles/style.css";
 
 const RegistrationForm = () => {
@@ -107,7 +107,7 @@ const RegistrationForm = () => {
           </form>
         </div>
         {/* Image */}
-        <div className="col-md-7 col-lg-7 p-0 right-side">
+        <div className="d-none d-md-block col-md-7 col-lg-7 p-0 right-side">
           <img src={login} alt="Login" className="img-fluid w-100 h-100" style={{ objectFit: "cover" }} />
         </div>
       </div>

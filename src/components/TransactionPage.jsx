@@ -42,7 +42,13 @@ const TransactionPage = () => {
           {transactions.slice(0, visibleTransactions).map((value) => (
             <li key={value.id} className="list-group-item d-flex justify-content-between mb-2">
               <div>
-                <div>{value.transaction_type === "TOPUP" ? <span className="text-success">+ Rp{value.total_amount}</span> : <span className="text-danger">- {value.total_amount}</span>}</div>
+                <div>
+                  {value.transaction_type === "TOPUP" ? (
+                    <span className="text-success">+{value.total_amount.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>
+                  ) : (
+                    <span className="text-danger">- {value.total_amount.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>
+                  )}
+                </div>
                 <div className="text-muted">{value.created_on}</div>
               </div>
               <div className="fs-6">{value.description}</div>

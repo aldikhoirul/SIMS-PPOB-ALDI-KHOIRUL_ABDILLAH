@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../services/api";
 import Navbar from "./Navbar";
-import "../styles/style.css";
 
 const AccountPage = () => {
   const [email, setEmail] = useState(localStorage.getItem("email"));
@@ -43,7 +42,7 @@ const AccountPage = () => {
 
       {/* Body */}
       <div className="d-flex flex-column align-items-center mt-4">
-        <img src={profileImage} alt="Profile" className="img-fluid rounded-circle mb-4 profile-image" />
+        <img src={profileImage} alt="Profile" className="img-fluid rounded-circle mb-4 profile-image" style={{ width: "100px", height: "100px", borderRadius: "50%", objectFit: "cover" }} />
         <h2 className="mb-4">
           {firstName} {last_name}
         </h2>

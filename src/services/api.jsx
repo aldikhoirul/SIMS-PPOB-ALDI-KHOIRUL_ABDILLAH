@@ -10,6 +10,7 @@ export const loginAuth = async (email, password) => {
     });
 
     localStorage.setItem("token", response.data.data.token);
+
     return response.data;
   } catch (error) {
     console.error(error.response.data.message);
@@ -48,7 +49,26 @@ export const topUp = async (top_up_amount) => {
     console.error(error.response.data.message);
     if (error.response.status === 401) localStorage.removeItem("token");
 
-    window.location.href = "/login";
+    throw error;
+  }
+};
+
+export const payment = async (service_code, total_amount) => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/transaction`,
+      { service_code, total_amount },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error.response.data.message);
+    if (error.response.status === 401) localStorage.removeItem("token");
+
     throw error;
   }
 };
@@ -135,6 +155,47 @@ export const getSaldo = async () => {
     if (error.response.status === 401) localStorage.removeItem("token");
 
     window.location.href = "/login";
+    throw error;
+  }
+};
+
+export const updateProfile = async (first_name, last_name) => {
+  try {
+    const response = await axios.put(
+      `${BASE_URL}/profile/update`,
+      { first_name, last_name },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(error.response.data.message);
+    if (error.response.status === 401) localStorage.removeItem("token");
+
+    throw error;
+  }
+};
+
+export const updateProfileImage = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await axios.put(`${BASE_URL}/profile/image`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(error.response.data.message);
+    if (error.response.status === 401) localStorage.removeItem("token");
+
     throw error;
   }
 };
