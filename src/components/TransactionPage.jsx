@@ -1,31 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { getTransaction } from "../services/api";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getTransaction } from "../redux/apiThunk";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import Saldo from "./Saldo";
+import Swal from "sweetalert2";
 
 const TransactionPage = () => {
-  const [transactions, setTransactions] = useState([]);
+  const dispatch = useDispatch();
+  const { transactions, loading, error } = useSelector((state) => state.transactions);
   const [visibleTransactions, setVisibleTransactions] = useState(3);
-  const [error, setError] = useState("");
+
+  useEffect(() => {
+    dispatch(getTransaction());
+  }, [dispatch]);
 
   const handleLoadMore = () => {
     setVisibleTransactions((prevVisibleTransactions) => prevVisibleTransactions + 3);
   };
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const response = await getTransaction();
-        setTransactions(response.data.records);
-      } catch (error) {
-        console.error(error.response.data.message);
-        setError(error.response.data.message);
-      }
-    };
+  if (loading) {
+    return <div className="text-center">Loading...</div>;
+  }
 
-    fetchTransactions();
-  }, []);
+  if (error) {
+    Swal.fire("Error", error, "error");
+    return <div className="text-center text-danger">Gagal mendapatkan data transaksi</div>;
+  }
 
   return (
     <div className="container">
@@ -39,21 +40,27 @@ const TransactionPage = () => {
         {/* Riwayat Transaksi */}
         <h5>Semua Transaksi</h5>
         <ul className="list-group mb-4">
-          {transactions.slice(0, visibleTransactions).map((value) => (
-            <li key={value.id} className="list-group-item d-flex justify-content-between mb-2">
-              <div>
+          {Array.isArray(transactions) && transactions.length > 0 ? (
+            transactions.slice(0, visibleTransactions).map((value) => (
+              <li key={value.id} className="list-group-item d-flex justify-content-between mb-2">
                 <div>
-                  {value.transaction_type === "TOPUP" ? (
-                    <span className="text-success">+{value.total_amount.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>
-                  ) : (
-                    <span className="text-danger">- {value.total_amount.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>
-                  )}
+                  <div>
+                    {value.transaction_type === "TOPUP" ? (
+                      <span className="text-success">+{value.total_amount.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>
+                    ) : (
+                      <span className="text-danger">- {value.total_amount.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>
+                    )}
+                  </div>
+                  <div className="text-muted">{value.created_on}</div>
                 </div>
-                <div className="text-muted">{value.created_on}</div>
-              </div>
-              <div className="fs-6">{value.description}</div>
+                <div className="fs-6">{value.description}</div>
+              </li>
+            ))
+          ) : (
+            <li className="list-group-item d-flex justify-content-between mb-2">
+              <div className="fs-6 text-muted">Tidak ada data transaksi</div>
             </li>
-          ))}
+          )}
         </ul>
 
         {/* Tombol Show More */}

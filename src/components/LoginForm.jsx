@@ -1,38 +1,31 @@
+// Redux Setup
 import React, { useState } from "react";
-import { loginAuth } from "../services/api";
+import { useDispatch, useSelector } from "react-redux";
+import { loginAuth } from "../redux/apiThunk";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/images/Logo.png";
 import login from "../assets/images/Illustrasi Login.png";
 import "../styles/style.css";
 
 const LoginForm = () => {
-  let history = useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.auth);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
 
-    try {
-      await loginAuth(email, password);
-      if (isLoggedIn) {
-        setIsLoggedIn(true);
-      }
-      return history("/home");
-    } catch (error) {
-      setLoading(false);
-      if (error.response) {
-        setError(error.response.data.message);
-      } else {
-        setError("Gagal menghubungkan ke server");
-      }
-    }
+    dispatch(loginAuth({ email, password }))
+      .unwrap()
+      .then(() => {
+        navigate("/home");
+      })
+      .catch((err) => {
+        console.error("Login gagal:", err);
+      });
   };
 
   return (
@@ -63,8 +56,8 @@ const LoginForm = () => {
                 <input type="password" name="password" className="form-control" id="password" placeholder="masukan password anda" onChange={(e) => setPassword(e.target.value)} value={password} />
               </div>
             </div>
-            <button type="submit" className="btn btn-danger w-100">
-              Masuk
+            <button type="submit" className="btn btn-danger w-100" disabled={loading}>
+              {loading ? "Loading..." : "Masuk"}
             </button>
             <p className="text-center mt-3" style={{ fontSize: "12px" }}>
               belum punya akun? registrasi{" "}

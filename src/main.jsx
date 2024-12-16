@@ -8,11 +8,21 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { SaldoProvider } from "./components/SaldoContext.jsx";
+import { Provider } from "react-redux";
+import store from "./redux/store";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+  <Provider store={store}>
     <SaldoProvider>
       <App />
     </SaldoProvider>
-  </React.StrictMode>
+  </Provider>
 );
+
+{
+  /* <ReactStrictMode>
+  <SaldoProvider>
+  <App />
+  </SaldoProvider>
+</React.StrictMode>; */
+}

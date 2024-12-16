@@ -1,45 +1,44 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { registerAuth } from "../redux/apiThunk";
+import { clearMessage } from "../redux/authSlice";
 import { Link } from "react-router-dom";
 import logo from "../assets/images/Logo.png";
 import login from "../assets/images/Illustrasi Login.png";
 import "../styles/style.css";
 
 const RegistrationForm = () => {
+  const dispatch = useDispatch();
+  const { loading, message, error } = useSelector((state) => state.auth);
+
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState(null);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (password !== confirmPass) {
-      setError("Password tidak sama");
-      return;
+      dispatch(clearMessage());
+      return alert("Password tidak sama");
     }
 
-    try {
-      const response = await axios.post("https://take-home-test-api.nutech-integrasi.com/registration", {
-        email: email,
+    dispatch(
+      registerAuth({
+        email,
         first_name: firstName,
         last_name: lastName,
-        password: password,
-      });
-      setMessage(response.data.message);
+        password,
+      })
+    ).then(() => {
       setEmail("");
       setFirstName("");
       setLastName("");
       setPassword("");
       setConfirmPass("");
-      setError("");
-    } catch (err) {
-      setMessage("");
-      setError(err.response.data.message);
-    }
+    });
   };
 
   return (
@@ -56,51 +55,26 @@ const RegistrationForm = () => {
           {error && <p style={{ color: "red" }}>{error}</p>}
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <div className="input-group">
-                <span className="input-group-text" style={{ backgroundColor: "#ffffff" }}>
-                  @
-                </span>
-                <input type="email" className="form-control" id="email" placeholder="masukan email anda" onChange={(e) => setEmail(e.target.value)} value={email} />
-              </div>
+              <input type="email" className="form-control" placeholder="Masukkan email Anda" value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div className="mb-4">
-              <div className="input-group">
-                <span className="input-group-text" style={{ backgroundColor: "#ffffff" }}>
-                  <i className="bi bi-person"></i>
-                </span>
-                <input type="text" className="form-control" id="first_name" placeholder="nama depan" onChange={(e) => setFirstName(e.target.value)} value={firstName} />
-              </div>
+              <input type="text" className="form-control" placeholder="Nama depan" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
             </div>
             <div className="mb-4">
-              <div className="input-group">
-                <span className="input-group-text" style={{ backgroundColor: "#ffffff" }}>
-                  <i className="bi bi-person"></i>
-                </span>
-                <input type="text" className="form-control" id="last_name" placeholder="nama belakang" onChange={(e) => setLastName(e.target.value)} value={lastName} />
-              </div>
+              <input type="text" className="form-control" placeholder="Nama belakang" value={lastName} onChange={(e) => setLastName(e.target.value)} />
             </div>
             <div className="mb-4">
-              <div className="input-group">
-                <span className="input-group-text" style={{ backgroundColor: "#ffffff" }}>
-                  <i className="bi bi-lock"></i>
-                </span>
-                <input type="password" className="form-control" id="password" placeholder="buat password" onChange={(e) => setPassword(e.target.value)} value={password} />
-              </div>
+              <input type="password" className="form-control" placeholder="Buat password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             <div className="mb-4">
-              <div className="input-group">
-                <span className="input-group-text" style={{ backgroundColor: "#ffffff" }}>
-                  <i className="bi bi-lock"></i>
-                </span>
-                <input type="password" className="form-control" id="confirmPassword" placeholder="konfirmasi password" onChange={(e) => setConfirmPass(e.target.value)} value={confirmPass} />
-              </div>
+              <input type="password" className="form-control" placeholder="Konfirmasi password" value={confirmPass} onChange={(e) => setConfirmPass(e.target.value)} />
             </div>
-            <button type="submit" className="btn btn-danger w-100">
-              Registrasi
+            <button type="submit" className="btn btn-danger w-100" disabled={loading}>
+              {loading ? "Loading..." : "Registrasi"}
             </button>
             <p className="text-center mt-3" style={{ fontSize: "12px" }}>
-              sudah punya akun? login{" "}
-              <Link className="text-decoration-none" style={{ color: "#FF0000" }} to="/login">
+              Sudah punya akun? Login{" "}
+              <Link to="/login" className="text-decoration-none" style={{ color: "#FF0000" }}>
                 di sini
               </Link>
             </p>

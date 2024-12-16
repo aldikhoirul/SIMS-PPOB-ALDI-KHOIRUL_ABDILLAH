@@ -1,18 +1,22 @@
-import React, { useState } from "react";
-import { topUp } from "../services/api";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { topUp } from "../redux/apiThunk";
+import { clearTopUpState } from "../redux/topupSlice";
 import Navbar from "./Navbar";
 import Saldo from "./Saldo";
 import Swal from "sweetalert2";
 
 const TopupPage = () => {
+  const dispatch = useDispatch();
+  const { loading, success, error } = useSelector((state) => state.topup);
+
   const [nominal, setNominal] = useState("");
-  const [message, setMessage] = useState("");
 
   const handleNominalChange = (value) => {
     setNominal(value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (nominal <= 0) {
@@ -25,21 +29,27 @@ const TopupPage = () => {
       return;
     }
 
-    try {
-      const response = await topUp(nominal);
-      Swal.fire("Berhasil", "Top up sebesar Rp " + nominal.toLocaleString() + " berhasil!", "success");
-      setNominal("");
-    } catch (error) {
-      console.error(error.response?.data?.message || error.message);
-
-      if (error.response?.data?.message === "Saldo tidak mencukupi") {
-        Swal.fire("Gagal", "Saldo Anda tidak mencukupi untuk melakukan top up.", "error");
-      } else {
-        Swal.fire("Error", error.response?.data?.message || "Terjadi kesalahan, coba lagi.", "error");
-      }
-      setMessage(error.response?.data?.message || "Terjadi kesalahan, coba lagi.");
-    }
+    dispatch(topUp(nominal));
   };
+
+  useEffect(() => {
+    if (success) {
+      Swal.fire({
+        title: "Berhasil",
+        text: `Top up sebesar Rp ${nominal.toLocaleString()} berhasil!`,
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        setNominal("");
+        dispatch(clearTopUpState());
+      });
+    }
+
+    if (error) {
+      Swal.fire("Error", error, "error");
+      dispatch(clearTopUpState());
+    }
+  }, [success, error, dispatch, nominal]);
 
   return (
     <div className="container">
@@ -63,8 +73,8 @@ const TopupPage = () => {
                 <input type="number" className="form-control" id="nominal" value={nominal} onChange={(e) => setNominal(e.target.value)} placeholder="Masukkan nominal" required />
               </div>
             </div>
-            <button type="submit" className="btn btn-danger w-100" disabled={nominal === ""}>
-              Top Up
+            <button type="submit" className="btn btn-danger w-100" disabled={nominal === "" || loading}>
+              {loading ? "Memproses..." : "Top Up"}
             </button>
           </form>
         </div>
