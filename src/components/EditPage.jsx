@@ -76,7 +76,7 @@ const EditPage = () => {
       <Navbar />
       <div className="d-flex flex-column align-items-center mt-4">
         <img src={profileImage || "/default-profile.jpg"} alt="Profile" className="img-fluid rounded-circle mb-4" style={{ width: "80px", height: "80px", objectFit: "cover" }} />
-        <form className="w-50" onSubmit={handleSubmit}>
+        <form className="col-12 col-md-6" onSubmit={handleSubmit}>
           <div className="mb-3">
             <label>Email</label>
             <input type="email" className="form-control" value={email || ""} disabled />

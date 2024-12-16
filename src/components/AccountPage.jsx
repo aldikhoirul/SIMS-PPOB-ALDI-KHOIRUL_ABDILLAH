@@ -38,7 +38,7 @@ const AccountPage = () => {
             <h2 className="mb-4">
               {firstName} {lastName}
             </h2>
-            <form className="w-50">
+            <form className="col-12 col-md-6">
               <div className="mb-3">
                 <label htmlFor="email" className="form-label">
                   Email
